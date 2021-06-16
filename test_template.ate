@@ -1,0 +1,7 @@
+Hello, here a test template
+
+The engine is running the version ${{engine.version}}
+
+#{{atiantengine.example.lang;;1rst argument;; 2nd argument}}
+
+4 + 5 + (4 * 5) = ${{sum;;4;;5;;${{mul;;4;;5}}}}
