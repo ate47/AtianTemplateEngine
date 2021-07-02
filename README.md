@@ -80,6 +80,6 @@ ${{my.sum;;3.5;;2.5}}
 parami is a template.
 
 ```
-Calling a translation: ${{identifier}}
-Calling a translation with arguments: ${{identifier;;param1;;param2}}
+Calling a translation: #{{identifier}}
+Calling a translation with arguments: #{{identifier;;param1;;param2}}
 ```
