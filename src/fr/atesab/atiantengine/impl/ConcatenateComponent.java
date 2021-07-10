@@ -1,4 +1,4 @@
-package fr.atesab.atiantengine.api.impl;
+package fr.atesab.atiantengine.impl;
 
 import fr.atesab.atiantengine.api.IComponent;
 

@@ -17,7 +17,7 @@ import fr.atesab.atiantengine.api.IComponentFactory;
 import fr.atesab.atiantengine.api.exception.EngineException;
 import fr.atesab.atiantengine.api.function.ComponentFunction;
 import fr.atesab.atiantengine.api.function.IComponentFunction;
-import fr.atesab.atiantengine.api.impl.ComponentFactoryImpl;
+import fr.atesab.atiantengine.impl.ComponentFactoryImpl;
 
 public class AtianTemplateEngine {
     public static final String ENGINE_VERSION = "0.1";

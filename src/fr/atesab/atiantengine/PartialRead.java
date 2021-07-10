@@ -1,13 +1,14 @@
 package fr.atesab.atiantengine;
 
-import java.util.regex.MatchResult;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+
+import fr.atesab.atiantengine.api.lexer.IPartialLexemeFind;
 
 public class PartialRead {
     int left;
     int right;
-    final String text;
+    public final String text;
 
     PartialRead(String text) {
         this.text = text;
@@ -32,7 +33,7 @@ public class PartialRead {
     }
 
     public boolean next(String text) {
-        return text == null || canRead(text) && this.text.substring(right).startsWith(text);
+        return text == null || canRead(text) && this.text.startsWith(text, right);
     }
 
     public boolean walk() {
@@ -82,5 +83,16 @@ public class PartialRead {
         String after = right != text.length() ? text.substring(right, Math.min(right + 5, text.length())) : "";
 
         return before + "|" + read + "|" + after;
+    }
+
+    public char peek() {
+        return text.charAt(right);
+    }
+
+    public String walkAndUseLexeme(IPartialLexemeFind<?> find) {
+        if (right > find.getRight())
+            throw new IllegalArgumentException("partialread right > find.getRight(), old IPartialLexemeFind usage?");
+
+        return walkAndUse(find.getRight() - right);
     }
 }
