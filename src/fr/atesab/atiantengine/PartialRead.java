@@ -6,9 +6,9 @@ import java.util.regex.Pattern;
 import fr.atesab.atiantengine.api.lexer.IPartialLexemeFind;
 
 public class PartialRead {
-    int left;
-    int right;
-    public final String text;
+    private int left;
+    private int right;
+    private String text;
 
     PartialRead(String text) {
         this.text = text;
@@ -20,6 +20,9 @@ public class PartialRead {
 
     public int getRight() {
         return right;
+    }
+    public String getText() {
+        return text;
     }
 
     public boolean canRead(String text) {
@@ -94,5 +97,9 @@ public class PartialRead {
             throw new IllegalArgumentException("partialread right > find.getRight(), old IPartialLexemeFind usage?");
 
         return walkAndUse(find.getRight() - right);
+    }
+
+    public void appendText(String text) {
+        
     }
 }
