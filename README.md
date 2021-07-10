@@ -12,6 +12,10 @@ Template engine in a will to be integrate in a Minecraft mod.
     - [Register](#register)
   - [Translations](#translations)
     - [In template](#in-template-1)
+  - [Lexer engine](#lexer-engine)
+    - [Lexeme file format](#lexeme-file-format)
+      - [Lexeme declaration](#lexeme-declaration)
+      - [Comment](#comment)
 
 # Usage
 
@@ -83,3 +87,76 @@ parami is a template.
 Calling a translation: #{{identifier}}
 Calling a translation with arguments: #{{identifier;;param1;;param2}}
 ```
+
+
+## Lexer engine
+
+The lexer, represented by the [Lexer class](src/fr/atesab/atiantengine/Lexer.java) can create a stream of lexeme from a file, you can add each lexeme pattern using the ``registerLexeme(T lexeme)`` method or create a file and ingest it using the ``buildFromFile(String file)`` method like this:
+
+```java
+
+import java.io.FileInputStream;
+import java.io.InputStream;
+
+import fr.atesab.atiantengine.Lexer;
+import fr.atesab.atiantengine.api.lexer.ILexemeStream;
+import fr.atesab.atiantengine.api.lexer.IPartialLexemeFind;
+import fr.atesab.atiantengine.utils.TextUtils;
+
+public class Example {
+
+	public static void main(String[] args) throws Exception {
+    // create a lexer from a file
+
+		Lexer<?> lexer = Lexer.buildFromFile("test_lexer.alex");
+
+    // create a lexeme stream from a file
+		ILexemeStream<?> stream;
+		try (InputStream is = new FileInputStream("test_lexer_source.ademo")) {
+			stream = lexer.createStream(TextUtils.readInput(is));
+		} catch (Exception e) {
+			e.printStackTrace();
+			return;
+		}
+
+    // show the lexemes from the stream
+		while (stream.hasNext()) {
+			IPartialLexemeFind<?> next = stream.next();
+			System.out.println(next.getLexeme().getName() + " - " + next.getMatcher().group());
+		}
+		if (stream.isSyntaxError())
+			System.out.println("Syntax error");
+	}
+}
+```
+
+### Lexeme file format
+
+The lexeme file list lexemes
+
+#### Lexeme declaration
+
+A lexeme is composed of an identifier followed by a regular expression (regex) or a literal string (literal). the identifier must follow the regex ``[A-Za-z_][A-Za-z_0-9]*``, you can add escaped characters like ``\n`` ``\r`` ``\t`` ``\b`` ``\f`` ``\\``.
+
+```java
+identifier regex
+identifier "literal"
+```
+
+**Example**
+
+```
+// + operator
+PLUS "+"
+// an integer, like 42
+INTEGER [1-9][0-9]*
+```
+
+#### Comment
+
+You can add a comment in you file by adding ``//`` before your comment, **you can't put a comment after a lexeme declaration**
+
+```java
+// my comment
+```
+
