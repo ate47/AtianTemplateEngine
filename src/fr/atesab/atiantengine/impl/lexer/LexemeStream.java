@@ -47,6 +47,8 @@ public class LexemeStream<L extends ILexeme> implements ILexemeStream<L> {
 	public IPartialLexemeFind<L> next() {
 		hasNext();
 		nextConsumed = true;
+		if (next != null)
+			partialRead.walkAndUseLexeme(next);
 		return next;
 	}
 }

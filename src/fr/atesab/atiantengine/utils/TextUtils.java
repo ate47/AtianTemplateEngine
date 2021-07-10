@@ -1,5 +1,10 @@
 package fr.atesab.atiantengine.utils;
 
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
+
 public final class TextUtils {
 	private TextUtils() {
 		throw new Error("Can't init util class");
@@ -16,6 +21,20 @@ public final class TextUtils {
 			s = escapePattern.apply(s);
 		}
 
+		return s;
+	}
+
+	public static String readInput(InputStream input) throws IOException {
+		BufferedReader reader = new BufferedReader(new InputStreamReader(input));
+		String line;
+		StringBuffer buffer = new StringBuffer();
+		while ((line = reader.readLine()) != null) {
+			buffer.append("\n").append(line);
+		}
+		String s = buffer.toString();
+		if (!s.isEmpty()) {
+			s = s.substring(1);
+		}
 		return s;
 	}
 }

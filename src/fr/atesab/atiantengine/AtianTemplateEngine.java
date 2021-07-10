@@ -18,6 +18,7 @@ import fr.atesab.atiantengine.api.exception.EngineException;
 import fr.atesab.atiantengine.api.function.ComponentFunction;
 import fr.atesab.atiantengine.api.function.IComponentFunction;
 import fr.atesab.atiantengine.impl.ComponentFactoryImpl;
+import fr.atesab.atiantengine.utils.TextUtils;
 
 public class AtianTemplateEngine {
     public static final String ENGINE_VERSION = "0.1";
@@ -72,17 +73,7 @@ public class AtianTemplateEngine {
      */
     public IComponent computeTemplate(InputStream input) {
         try {
-            BufferedReader reader = new BufferedReader(new InputStreamReader(input));
-            String line;
-            StringBuffer buffer = new StringBuffer();
-            while ((line = reader.readLine()) != null) {
-                buffer.append("\n").append(line);
-            }
-            String s = buffer.toString();
-            if (!s.isEmpty()) {
-                s = s.substring(1);
-            }
-            return computeTemplate(s);
+            return computeTemplate(TextUtils.readInput(input));
         } catch (Exception e) {
             if (logPolicy == LogPolicy.DEBUG)
                 e.printStackTrace();

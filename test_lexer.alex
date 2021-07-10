@@ -1,0 +1,16 @@
+// Lexer demo comment
+
+
+// basic operations
+
+PLUS "+"
+MINUS "-"
+MULT "*"
+
+OPEN_P "("
+CLOSE_P ")"
+
+IDF [A-Za-z_][A-Za-z_0-9]*
+
+INTEGER [1-9][0-9]*
+

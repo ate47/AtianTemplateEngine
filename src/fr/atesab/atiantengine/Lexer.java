@@ -1,6 +1,7 @@
 package fr.atesab.atiantengine;
 
 import java.io.BufferedReader;
+import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
@@ -52,8 +53,21 @@ public class Lexer<T extends ILexeme> {
 
 	}
 
-	public static final Pattern LEXEME_NAME_PATTERN = Pattern.compile("A-Za-z_0-9");
+	public static final Pattern LEXEME_NAME_PATTERN = Pattern.compile("[A-Za-z_][A-Za-z_0-9]*");
 	public static final char CONST_STRING_CHAR = '"';
+
+	public static Lexer<ILexeme> buildFromFile(String file) throws IOException {
+		try (InputStream is = new FileInputStream(file)) {
+			return buildFromInput(is, Lexeme::new);
+		}
+	}
+
+	public static <T extends ILexeme> Lexer<T> buildFromFile(String file, ILexemeBuilder<T> builder)
+			throws IOException {
+		try (InputStream is = new FileInputStream(file)) {
+			return buildFromInput(is, builder);
+		}
+	}
 
 	public static Lexer<ILexeme> buildFromInput(InputStream stream) throws IOException {
 		return buildFromInput(stream, Lexeme::new);
@@ -92,7 +106,7 @@ public class Lexer<T extends ILexeme> {
 
 		Matcher m = LEXEME_NAME_PATTERN.matcher(line); // find the lexeme identifier
 
-		if (m.find(left))
+		if (!m.find(left))
 			throw new LexerException("syntax error: line must start with a lexeme identifier!", lineCount, left);
 
 		String idf = line.substring(left, m.end());
@@ -121,8 +135,6 @@ public class Lexer<T extends ILexeme> {
 				throw new LexerException(
 						"syntax error: missing closing " + CONST_STRING_CHAR + " before the end of the line!",
 						lineCount, right - 1);
-
-			right--; // remove end char
 
 			regex = Pattern.quote(line.substring(left, right));
 
@@ -176,5 +188,15 @@ public class Lexer<T extends ILexeme> {
 	 */
 	public ILexemeStream<T> createStream(PartialRead partial) {
 		return new LexemeStream<>(this, partial);
+	}
+
+	/**
+	 * create a stream from a text with this lexer
+	 * 
+	 * @param partial the text to use
+	 * @return the stream
+	 */
+	public ILexemeStream<T> createStream(String text) {
+		return new LexemeStream<>(this, new PartialRead(text));
 	}
 }

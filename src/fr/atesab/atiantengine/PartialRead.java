@@ -10,7 +10,7 @@ public class PartialRead {
     private int right;
     private String text;
 
-    PartialRead(String text) {
+    public PartialRead(String text) {
         this.text = text;
     }
 
