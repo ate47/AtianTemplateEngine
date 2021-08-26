@@ -1,16 +1,14 @@
 package fr.atesab.atiantengine.impl;
 
-import fr.atesab.atiantengine.api.IComponent;
+import fr.atesab.atiantengine.api.AbstractStringComponent;
 
-public class TextComponent implements IComponent<String> {
-    private String text;
-
+public class TextComponent extends AbstractStringComponent<String> {
     public TextComponent(String text) {
-        this.text = text;
+        super(text);
     }
 
     @Override
     public String generate() {
-        return text;
+        return generateAsString();
     }
 }
