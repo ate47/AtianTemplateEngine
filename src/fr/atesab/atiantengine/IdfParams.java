@@ -4,16 +4,17 @@ import java.util.List;
 
 import fr.atesab.atiantengine.api.IComponent;
 
-class IdfParams {
+class IdfParams<C> {
     String identifier;
-    List<IComponent> args;
+    List<IComponent<C>> args;
 
-    IdfParams(String identifier, List<IComponent> args) {
+    IdfParams(String identifier, List<IComponent<C>> args) {
         this.identifier = identifier;
         this.args = args;
     }
 
-    IComponent[] argsAsArray() {
+    @SuppressWarnings("unchecked")
+    IComponent<C>[] argsAsArray() {
         return args.toArray(IComponent[]::new);
     }
 }

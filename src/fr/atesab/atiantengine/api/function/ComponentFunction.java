@@ -1,47 +1,136 @@
 package fr.atesab.atiantengine.api.function;
 
-import java.util.function.BiFunction;
-import java.util.function.Function;
-import java.util.function.Supplier;
-
 import fr.atesab.atiantengine.api.IComponent;
+import fr.atesab.atiantengine.api.ComponentFactory;
 
-public abstract class ComponentFunction implements IComponentFunction {
+public abstract class ComponentFunction<C> implements IComponentFunction<C> {
 
-    public static ComponentFunction constField(String text) {
-        return func0(() -> text);
+    @FunctionalInterface
+    public interface ComponentFunction0<C> {
+        IComponent<C> apply(ComponentFactory<C> cFactory);
     }
 
-    public static ComponentFunction func0(Supplier<String> supplier) {
-        return new ComponentFunction(0) {
+    @FunctionalInterface
+    public interface ComponentFunction1<C> {
+        IComponent<C> apply(ComponentFactory<C> cFactory, IComponent<C> arg1);
+    }
+
+    @FunctionalInterface
+    public interface ComponentFunction2<C> {
+        IComponent<C> apply(ComponentFactory<C> cFactory, IComponent<C> arg1, IComponent<C> arg2);
+    }
+
+    @FunctionalInterface
+    public interface ComponentFunction3<C> {
+        IComponent<C> apply(ComponentFactory<C> cFactory, IComponent<C> arg1, IComponent<C> arg2, IComponent<C> arg3);
+    }
+
+    @FunctionalInterface
+    public interface ComponentFunction4<C> {
+        IComponent<C> apply(ComponentFactory<C> cFactory, IComponent<C> arg1, IComponent<C> arg2, IComponent<C> arg3,
+                IComponent<C> arg4);
+    }
+
+    /**
+     * Create static text field value
+     * 
+     * @param <C>      the component type
+     * @param cFactory the factory to build the function
+     * @param text     the text
+     * @return the component function
+     */
+    public static <C> ComponentFunction<C> constField(ComponentFactory<C> cFactory, String text) {
+        return func0(cFactory, f -> f.createText(text));
+    }
+
+    /**
+     * Create function without argument
+     * 
+     * @param <C>      the component type
+     * @param cFactory the factory to build the function
+     * @param function the function
+     * @return the component function
+     */
+    public static <C> ComponentFunction<C> func0(ComponentFactory<C> cFactory, ComponentFunction0<C> function) {
+        return new ComponentFunction<C>(0) {
             @Override
-            public String apply0(IComponent[] args) {
-                return supplier.get();
+            public IComponent<C> apply0(ComponentFactory<C> cFactory, IComponent<C>[] args) {
+                return function.apply(cFactory);
             }
         };
     }
 
-    public static ComponentFunction func1(Function<IComponent, String> function) {
-        return new ComponentFunction(1) {
+    /**
+     * Create function with 1 argument
+     * 
+     * @param <C>      the component type
+     * @param cFactory the factory to build the function
+     * @param function the function
+     * @return the component function
+     */
+    public static <C> ComponentFunction<C> func1(ComponentFunction1<C> function) {
+        return new ComponentFunction<C>(1) {
             @Override
-            public String apply0(IComponent[] args) {
-                return function.apply(args[0]);
+            public IComponent<C> apply0(ComponentFactory<C> cFactory, IComponent<C>[] args) {
+                return function.apply(cFactory, args[0]);
             }
         };
     }
 
-    public static ComponentFunction func2(BiFunction<IComponent, IComponent, String> function) {
-        return new ComponentFunction(2) {
+    /**
+     * Create function with 2 arguments
+     * 
+     * @param <C>      the component type
+     * @param cFactory the factory to build the function
+     * @param function the function
+     * @return the component function
+     */
+    public static <C> ComponentFunction<C> func2(ComponentFunction2<C> function) {
+        return new ComponentFunction<C>(2) {
             @Override
-            public String apply0(IComponent[] args) {
-                return function.apply(args[0], args[1]);
+            public IComponent<C> apply0(ComponentFactory<C> cFactory, IComponent<C>[] args) {
+                return function.apply(cFactory, args[0], args[1]);
+            }
+        };
+    }
+
+    /**
+     * Create function with 3 arguments
+     * 
+     * @param <C>      the component type
+     * @param cFactory the factory to build the function
+     * @param function the function
+     * @return the component function
+     */
+    public static <C> ComponentFunction<C> func3(ComponentFunction3<C> function) {
+        return new ComponentFunction<C>(3) {
+            @Override
+            public IComponent<C> apply0(ComponentFactory<C> cFactory, IComponent<C>[] args) {
+                return function.apply(cFactory, args[0], args[1], args[2]);
+            }
+        };
+    }
+
+    /**
+     * Create function with 4 arguments
+     * 
+     * @param <C>      the component type
+     * @param cFactory the factory to build the function
+     * @param function the function
+     * @return the component function
+     */
+    public static <C> ComponentFunction<C> func4(ComponentFunction4<C> function) {
+        return new ComponentFunction<C>(4) {
+            @Override
+            public IComponent<C> apply0(ComponentFactory<C> cFactory, IComponent<C>[] args) {
+                return function.apply(cFactory, args[0], args[1], args[2], args[3]);
             }
         };
     }
 
     private int count;
 
-    private ComponentFunction(int count) {
+    public ComponentFunction(int count) {
         this.count = count;
     }
 
@@ -50,11 +139,11 @@ public abstract class ComponentFunction implements IComponentFunction {
     }
 
     @Override
-    public final String apply(IComponent[] args) {
+    public final IComponent<C> apply(ComponentFactory<C> cFactory, IComponent<C>[] args) {
         if (args.length != count)
-            return "bad_arg_count " + args.length + " != " + count + "!";
-        return apply0(args);
+            return cFactory.createText("bad_arg_count " + args.length + " != " + count + "!");
+        return apply0(cFactory, args);
     }
 
-    protected abstract String apply0(IComponent[] args);
+    protected abstract IComponent<C> apply0(ComponentFactory<C> cFactory, IComponent<C>[] args);
 }

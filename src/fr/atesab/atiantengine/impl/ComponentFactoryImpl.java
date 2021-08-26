@@ -1,27 +1,31 @@
 package fr.atesab.atiantengine.impl;
 
 import fr.atesab.atiantengine.api.IComponent;
-import fr.atesab.atiantengine.api.IComponentFactory;
+import fr.atesab.atiantengine.api.ComponentFactory;
+import fr.atesab.atiantengine.api.function.FunctionnalComponent;
 import fr.atesab.atiantengine.api.function.IComponentFunction;
 
-public class ComponentFactoryImpl implements IComponentFactory {
+public class ComponentFactoryImpl extends ComponentFactory<String> {
 
     @Override
-    public IComponent createText(String txt) {
+    public IComponent<String> createText(String txt) {
         return new TextComponent(txt);
     }
 
     @Override
-    public IComponent createTranslation(String txt, IComponent... args) {
-        return concatComponents(createText(txt), createText(" ("), concatComponents(args), createText(")"));
+    @SuppressWarnings("unchecked")
+    public IComponent<String> createTranslation(String txt, IComponent<String>[] args) {
+        return concatComponents(
+                new IComponent[] { createText(txt), createText(" ("), concatComponents(args), createText(")") });
     }
 
     @Override
-    public IComponent createFunctionnal(IComponentFunction function, IComponent[] args) {
-        return new FunctionnalComponent(function, args);
+    public IComponent<String> createFunctionnal(IComponentFunction<String> function, IComponent<String>[] args) {
+        return new FunctionnalComponent<>(this, function, args);
     }
+
     @Override
-    public IComponent concatComponents(IComponent... components) {
+    public IComponent<String> concatComponents(IComponent<String>[] components) {
         return new ConcatenateComponent(components);
     }
 }
